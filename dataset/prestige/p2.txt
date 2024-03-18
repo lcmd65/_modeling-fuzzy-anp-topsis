@@ -3,4 +3,4 @@ A	AB	A
 A	AS	A
 AS	AS	AS
 A	AS	AS
-VS	AS	S
+AS	AS	S

@@ -1,6 +1,6 @@
 A	A	AS
 A	A	AS
-A	AG	S
+A	AS	S
 AS	AS	A
 AS	AS	AS
-S	S	VS
+S	S	A
