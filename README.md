@@ -1,8 +1,12 @@
 ## requirements
   requirements.txt
 
-## run
+## running (exc)
   Run this cmd: python3 main.py
 
 ## agency
+
 fuzzy - anp topsis for chosing supliers
+ - data source
+ - utils
+ - main
