@@ -110,35 +110,14 @@ def factor_matrix():
     """_summary_
     Overrall mattrix of factor
     """
-    dataframe = []
-    dataframe.append(element_factor_mattrix("dataset/cost/c1.txt"))
-    dataframe.append(element_factor_mattrix("dataset/cost/c2.txt"))
-    dataframe.append(element_factor_mattrix("dataset/cost/c3.txt"))
-    dataframe.append(element_factor_mattrix("dataset/quality/q1.txt"))
-    dataframe.append(element_factor_mattrix("dataset/quality/q2.txt"))
-    dataframe.append(element_factor_mattrix("dataset/prestige/p1.txt"))
-    dataframe.append(element_factor_mattrix("dataset/prestige/p2.txt"))
-    dataframe.append(element_factor_mattrix("dataset/prestige/p3.txt"))
-    dataframe.append(element_factor_mattrix("dataset/prestige/p4.txt"))
-    dataframe.append(element_factor_mattrix("dataset/factory/f1.txt"))
-    dataframe.append(element_factor_mattrix("dataset/factory/f2.txt"))
-    dataframe.append(element_factor_mattrix("dataset/factory/f3.txt"))
-    dataframe.append(element_factor_mattrix("dataset/factory/f4.txt"))
-    dataframe.append(element_factor_mattrix("dataset/level/l1.txt"))
-    dataframe.append(element_factor_mattrix("dataset/level/l2.txt"))
-    dataframe.append(element_factor_mattrix("dataset/env/e1.txt"))
-    dataframe.append(element_factor_mattrix("dataset/env/e2.txt"))
     
-    df = pd.DataFrame(dataframe, columns=[
-                      "S1", "S2", "S3", "S4", "S5", "S6"])
-    df_standard = df
+    df_standard = draw_df()
     for row in range(df_standard.shape[0]):
         max_value = max_(df_standard.iloc[row])  # Finding the maximum value in each row
         for col in range(df_standard.shape[1]):
             for index in range (3):
                 df_standard.iloc[row, col][index] = df_standard.iloc[row, col][index] / max_value  # Normalizing each value by dividing by the maximum value
-
-    df_standard
+    df_standard.to_csv('output/df_standard.csv', index=False)
     
     df_standard_weight = df_standard
     for row, value in zip(range(df_standard.shape[0]), weight_matrix.values()):
@@ -146,12 +125,46 @@ def factor_matrix():
             for index in range(3):
                 df_standard.iloc[row, col][index] = df_standard.iloc[row,
                                                                      col][index]*value
-    df_standard_weight
+    df_standard_weight.to_csv('output/df_standard_weight.csv', index=False)
     
     s_max = S_max(df_standard_weight)
+    pd.DataFrame(s_max).to_csv('output/S+.csv', index=False)
+    
     s_min = S_min(df_standard_weight)
-    print(FPIS(df_standard_weight, s_max))
-    print(FNIS(df_standard_weight, s_min))
+    pd.DataFrame(s_min).to_csv('output/S-.csv', index=False)
+    
+    df_s_max = df_standard_weight.copy()
+    df_s_min = df_standard_weight.copy()
+    print(df_standard_weight)
+    fpis = FPIS(df_s_max, s_max)
+    fpis.to_csv('output/fpis.csv', index=False)
+    
+    fnis = FNIS(df_s_min, s_min)
+    fnis.to_csv('output/fnis.csv', index=False)
+    
+    d1 = []
+    d2 = []
+    for columns in fpis:
+        d1.append(sum(fpis[columns]))
+    for columns in fnis.columns:
+        d2.append(sum(fnis[columns]))
+    pd.DataFrame(d1).to_csv('output/d+.csv', index=False)
+    pd.DataFrame(d2).to_csv('output/d-.csv', index=False)
+    
+    df_result = pd.DataFrame(columns = ["supliers", "CCi", "Rank"])
+    data_to_concat = []
+    for index in range(6):
+        data_to_concat.append(["".join(["S", str(index)]), d2[index] / (d1[index] + d2[index]), None])
+
+    # Concatenate DataFrames
+    df_result = pd.concat([df_result, pd.DataFrame(data_to_concat, columns=["supliers", "CCi", "Rank"])], ignore_index=True)
+
+    # Calculate ranks
+    df_result["Rank"] = df_result["CCi"].rank(method='min', ascending=False)
+    print(df_result)
+    df_result.to_csv('output/suplier_rank.csv', index=False)
+
+    
 
 def S_max(df):
     """_summary_
@@ -230,9 +243,11 @@ def FPIS(df, s):
         df (_type_): _description_
         s (_type_): _description_
     """
-    for row in zip(range(df.shape[0])):
+    for row in (range(df.shape[0])):
         for col in range(df.shape[1]):
-            df.iloc[row, col] = distances_(df.iloc[row, col], s[row])
+            #df.iloc[row, col] = distances_(df.iloc[row, col], s[row])
+            val = distances_(df.iloc[row, col], s[row])
+            df.iloc[row, col] = val
     return df
 
 def FNIS(df,s):
@@ -242,10 +257,35 @@ def FNIS(df,s):
         df (_type_): _description_
         s (_type_): _description_
     """
-    for row in zip(range(df.shape[0])):
+    for row in (range(df.shape[0])):
         for col in range(df.shape[1]):
-            df.iloc[row, col] = distances_(df.iloc[row, col], s[row])
+            val = distances_(df.iloc[row, col], s[row])
+            df.iloc[row, col] = val
     return df
     
 def model(): 
     pass
+
+def draw_df():
+    dataframe = []
+    dataframe.append(element_factor_mattrix("dataset/cost/c1.txt"))
+    dataframe.append(element_factor_mattrix("dataset/cost/c2.txt"))
+    dataframe.append(element_factor_mattrix("dataset/cost/c3.txt"))
+    dataframe.append(element_factor_mattrix("dataset/quality/q1.txt"))
+    dataframe.append(element_factor_mattrix("dataset/quality/q2.txt"))
+    dataframe.append(element_factor_mattrix("dataset/prestige/p1.txt"))
+    dataframe.append(element_factor_mattrix("dataset/prestige/p2.txt"))
+    dataframe.append(element_factor_mattrix("dataset/prestige/p3.txt"))
+    dataframe.append(element_factor_mattrix("dataset/prestige/p4.txt"))
+    dataframe.append(element_factor_mattrix("dataset/factory/f1.txt"))
+    dataframe.append(element_factor_mattrix("dataset/factory/f2.txt"))
+    dataframe.append(element_factor_mattrix("dataset/factory/f3.txt"))
+    dataframe.append(element_factor_mattrix("dataset/factory/f4.txt"))
+    dataframe.append(element_factor_mattrix("dataset/level/l1.txt"))
+    dataframe.append(element_factor_mattrix("dataset/level/l2.txt"))
+    dataframe.append(element_factor_mattrix("dataset/env/e1.txt"))
+    dataframe.append(element_factor_mattrix("dataset/env/e2.txt"))
+
+    df = pd.DataFrame(dataframe, columns=[
+                      "S1", "S2", "S3", "S4", "S5", "S6"])
+    return df
