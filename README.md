@@ -8,5 +8,5 @@
 
 fuzzy - anp topsis for chosing supliers
  - data source
- - utils
- - main
+ - utils: function for caculation
+ - main: main thread
