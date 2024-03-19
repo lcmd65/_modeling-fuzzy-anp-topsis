@@ -154,7 +154,7 @@ def factor_matrix():
     df_result = pd.DataFrame(columns = ["supliers", "CCi", "Rank"])
     data_to_concat = []
     for index in range(6):
-        data_to_concat.append(["".join(["S", str(index)]), d2[index] / (d1[index] + d2[index]), None])
+        data_to_concat.append(["".join(["S", str(index +1)]), d2[index] / (d1[index] + d2[index]), None])
 
     # Concatenate DataFrames
     df_result = pd.concat([df_result, pd.DataFrame(data_to_concat, columns=["supliers", "CCi", "Rank"])], ignore_index=True)

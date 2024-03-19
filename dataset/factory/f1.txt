@@ -1,4 +1,4 @@
-S	S	AS
+A	S	AS
 A	AS	A
 A	AS	A
 AB	A	A
