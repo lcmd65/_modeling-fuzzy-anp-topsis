@@ -1,8 +1,8 @@
 ## requirements
-  requirements.txt
+    requirements.txt
 
 ## running (exc)
-  Run this cmd: python3 main.py
+    Run this cmd: python3 main.py
 
 ## agency
 
